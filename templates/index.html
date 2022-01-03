@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+ 
+{% block body %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<h1> Please provide the input </h1>
+<form method="POST">
+  <label for="production">CPO production [MT]:</label>
+  <input type="float" id="production" name="production">
+  <br>
+  <label for="stock">CPO stock [MT]:</label>
+  <input type="float" id="stock" name="stock">
+  <br>
+  <label for="export">CPO export [MT]:</label>
+  <input type="float" id="export" name="export">
+  <br>
+  <label for="import">CPO import [MT]:</label>
+  <input type="float" id="import" name="import">
+  <br>
+  <label for="time">Point of time :</label>
+  <input type="number" id="time" name="time">
+  <br>
+  <label for="datetime">Date :</label>
+  <input type="date" id="datetime" name="datetime">
+  <br>
+  <br>
+<input type="submit" value="Predict" />
+</form>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-3">
+            <h1> Model metrics </h1>
+            <p>RMSE: {{ rmse }}</p>
+            <p>Model accuracy: {{ score }} %</p>
+    
+        </div>
+        <div class="col-md-6">
+            <div class="chart" id="bargraph">
+                <script>
+                    var graphs = {{plot | safe}};
+                    Plotly.plot('bargraph',graphs,{});
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/plots.js') }}"></script>
+{% endblock %}
