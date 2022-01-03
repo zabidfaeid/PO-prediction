@@ -6,12 +6,12 @@ Created on Tue Dec 28 14:11:27 2021
 """
 import json
 import joblib
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request#, jsonify
 import plotly
 import plotly.graph_objs as go
 import pandas as pd
-import numpy as np
-from po_predict import seasonal_model
+#import numpy as np
+#from po_predict import seasonal_model
 from plotly.tools import make_subplots
 #from plot_flask import create_plot
 
@@ -34,6 +34,27 @@ with open('./data/metrics_model.txt', 'r') as json_file:
 
 #-- load the lc data
 df_lc = pd.read_csv('./data/lc.csv')
+
+
+def seasonal_model(dict_ft, chosen_time, sr = 48, time_max = 81):
+    import math
+    # sr is the signal range that we used at the beginning when we develop the FT
+    dt = pd.DataFrame(columns = ['Time'])
+    dt['Time'] = list(range(0,time_max))
+    for key in dict_ft.keys():
+        a = dict_ft[key]['amplitude']
+        w = 2 * math.pi * (dict_ft[key]['freq'] / sr)
+        p = dict_ft[key]['phase']
+        dt[key] = dt['Time'].apply(lambda t: math.cos(w*t + p))
+    dt['FT_All'] = 0
+    for k, v in dict_ft.items():
+        dt['FT_All'] = dt['FT_All'] + dt[k]
+    
+    ft_value = dt['FT_All'].loc[dt.Time == chosen_time].values
+    
+    return ft_value, dt
+
+
 
 @app.route('/', methods = ['GET', 'POST'])
 
