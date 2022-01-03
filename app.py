@@ -241,4 +241,4 @@ def change_features():
     return graphJSON
     
 if __name__ == '__main__':
-    app.run(debug = True, port=3000) #-- use port other than 5000
+    app.run(debug = True) #-- use port other than 5000
